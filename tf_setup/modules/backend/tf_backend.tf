@@ -1,3 +1,5 @@
+variable "ENV" {
+}
 resource "aws_s3_bucket" "tf_remote_backend_s3_bucket" {
   bucket = "tf-remote-backend-bucket-${var.ENV}"
   acl    = "private"
