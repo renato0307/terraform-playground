@@ -34,12 +34,16 @@ jobs:
         export TF_CLI_ARGS_init="-backend-config='access_key=$AWS_ACCESS_KEY_ID' -backend-config='secret_key=$AWS_SECRET_ACCESS_KEY' -backend-config='token=$AWS_SESSION_TOKEN' -backend-config='role_arn=$AWS_ROLE_ARN' -backend-config='bucket=$AWS_S3_BUCKET' -backend-config='key=$AWS_S3_KEY'"
         terraform init -input=false
 
+    - name: Terraform create workspace
+      working-directory: ./tf_event_bus
+      run: terraform workspace new ${GITHUB_REF##*/}
+
     - name: Terraform validation
-      working-directory: ./tf_event_bus/dev
+      working-directory: ./tf_event_bus
       run: terraform validate
 
     - name: Terraform apply
-      working-directory: ./tf_event_bus/dev
+      working-directory: ./tf_event_bus
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
