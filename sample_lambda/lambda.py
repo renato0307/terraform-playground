@@ -1,3 +1,3 @@
 
-def handle(event, context):
+def handler(event, context):
     print(event)

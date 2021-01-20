@@ -21,6 +21,10 @@ variable "lambda_handler" {
   default = "lambda.handler"
 }
 
+variable "lambda_runtime" {
+  default = "python3.8"
+}
+
 variable "lambda_memory" {
   default = 128
 }
