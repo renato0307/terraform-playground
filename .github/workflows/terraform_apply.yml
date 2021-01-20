@@ -36,7 +36,7 @@ jobs:
 
     - name: Terraform create workspace
       working-directory: ./tf_event_bus
-      run: terraform workspace new ${GITHUB_REF##*/}
+      run: terraform workspace select ${GITHUB_REF##*/}
 
     - name: Terraform validation
       working-directory: ./tf_event_bus
