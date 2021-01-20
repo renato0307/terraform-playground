@@ -1,5 +1,5 @@
 module "backend" {
-  source         = "../modules/backend"
+  source         = "../modules/terraform"
   ENV            = "dev"
 }
 
