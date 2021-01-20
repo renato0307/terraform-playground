@@ -10,3 +10,21 @@ variable "lambda_log_level" {
 variable "lambda_relative_path" {}
 
 variable "lambda_name" {}
+
+variable "lambda_friendly_name" {}
+
+variable "lambda_description" {
+  default = ""
+}
+
+variable "lambda_handler" {
+  default = "lambda.handler"
+}
+
+variable "lambda_memory" {
+  default = 128
+}
+
+variable "lambda_timeout" {
+  default = 30
+}

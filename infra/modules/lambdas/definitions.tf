@@ -4,7 +4,7 @@
 locals {
   # Relative paths change if this configuration is
   # included as a module from Terragrunt.
-  lambda_src_path = "${path.module}/${var.lambda_relative_path}${var.lambda_name}"
+  lambda_src_path = "${path.module}/${var.lambda_relative_path}"
 }
 
 # Compute the source code hash, only taking into
@@ -77,7 +77,7 @@ resource "aws_iam_role" "execution_role" {
   # within the same account, separate Roles must be created.
   # The same Role could be shared across different Lambda functions,
   # but it's just not convenient to do so in Terraform.
-  name = "lambda-execution-role-zero-provider-${var.aws_region}"
+  name = "lambda-execution-role-${var.lambda_name}-${var.aws_region}"
 
   assume_role_policy = <<EOF
 {
@@ -103,7 +103,7 @@ EOF
 # Attach a IAM policy to the execution role to allow
 # the Lambda to stream logs to Cloudwatch Logs.
 resource "aws_iam_role_policy" "log_writer" {
-  name = "lambda-log-writer-zero-provider"
+  name = "lambda-log-writer-${var.lambda_name}"
   role = aws_iam_role.execution_role.id
 
   policy = jsonencode({
@@ -123,15 +123,15 @@ resource "aws_iam_role_policy" "log_writer" {
 }
 
 # Deploy the Lambda function to AWS
-resource "aws_lambda_function" "zero_provider" {
-  function_name = "zero-provider"
-  description = "Just a stub Lambda function logging multidimensional arrays full of zeros."
+resource "aws_lambda_function" "lambda_function" {
+  function_name = var.lambda_friendly_name
+  description = var.lambda_description
   role = aws_iam_role.execution_role.arn
   filename = data.archive_file.lambda_source_package.output_path
   runtime = "python3.8"
-  handler = "lambda.handler"
-  memory_size = 128
-  timeout = 30
+  handler = var.lambda_handler
+  memory_size = var.lambda_memory
+  timeout = var.lambda_timeout
 
   source_code_hash = data.archive_file.lambda_source_package.output_base64sha256
 
@@ -155,7 +155,7 @@ resource "aws_lambda_function" "zero_provider" {
 # The Lambda function would create this Log Group automatically
 # at runtime if provided with the correct IAM policy, but
 # we explicitly create it to set an expiration date to the streams.
-resource "aws_cloudwatch_log_group" "zero_provider" {
-  name              = "/aws/lambda/${aws_lambda_function.zero_provider.function_name}"
+resource "aws_cloudwatch_log_group" "lambda_function" {
+  name = "/aws/lambda/${aws_lambda_function.lambda_function.function_name}"
   retention_in_days = 30
 }
