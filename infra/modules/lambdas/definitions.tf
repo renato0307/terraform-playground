@@ -181,3 +181,8 @@ resource "aws_cloudwatch_log_group" "lambda_function" {
   name = "/aws/lambda/${aws_lambda_function.lambda_function.function_name}"
   retention_in_days = 30
 }
+
+output "lambda_function_invoke_arn" {
+  description = "Lambda function invoke ARN"
+  value       = aws_lambda_function.lambda_function.invoke_arn
+}
