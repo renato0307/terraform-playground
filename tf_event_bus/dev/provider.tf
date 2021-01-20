@@ -5,7 +5,7 @@ provider "aws" {
   token = var.AWS_SESSION_TOKEN
 
   assume_role {
-    role_arn    = "arn:aws:iam::${var.AWS_ACCOUNT}:role/${var.AWS_ROLE}"
+    role_arn    = var.AWS_ROLE_ARN
   }
 
 }

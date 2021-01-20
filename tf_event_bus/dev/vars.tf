@@ -5,5 +5,4 @@ variable "AWS_REGION" {
 variable AWS_ACCESS_KEY {}
 variable AWS_SECRET_KEY {}
 variable AWS_SESSION_TOKEN {}
-variable AWS_ACCOUNT {}
-variable AWS_ROLE {}
+variable AWS_ROLE_ARN {}
