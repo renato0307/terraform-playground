@@ -5,9 +5,12 @@ Playground for Terraform learning
 
 | Name | Description |
 | ---- | ----------- | 
-|tf_cicd|Terraform project for CICD|
-|tf_event_bus|Terraform project for EventBus|
-|tf_setup|Terraform project to create Terraform setup assets like s3 for backends|
+|infra|Terraform resources|
+|infra/modules|Reusable Terraform modules|
+|infra/tf_event_bus|Terraform project to create the internal event bus|
+|infra/tf_lambdas|Terraform project to create the sample lambda function|
+|infra/tf_setup|Terraform project to setup Terraform (create assets for the backend)|
+|sample_lambda|Code for a sample lambda function|
 
 ## terraform commands
 
