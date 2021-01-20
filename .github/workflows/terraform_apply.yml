@@ -14,14 +14,16 @@ jobs:
       run: |
         tf_version=$TERRAFORM_VERSION
         wget https://releases.hashicorp.com/terraform/"$tf_version"/terraform_"$tf_version"_linux_amd64.zip
-        unzip terraform_"$tf_version"_linux_amd64.zip
-        sudo mv terraform /usr/local/bin/
+        sudo rm -rf terraform
+        sudo rm -f /usr/local/bin/terraform
+        sudo unzip -o terraform_"$tf_version"_linux_amd64.zip
+        sudo mv -f terraform /usr/local/bin/
 
     - name: Verify Terraform version
       run: terraform --version
 
     - name: Terraform init
-      working-directory: ./tf_event_bus
+      working-directory: ./infra/tf_event_bus
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -31,19 +33,18 @@ jobs:
         AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
         AWS_S3_KEY: ${{ secrets.AWS_S3_KEY }}
       run: |
-        export TF_CLI_ARGS_init="-backend-config='access_key=$AWS_ACCESS_KEY_ID' -backend-config='secret_key=$AWS_SECRET_ACCESS_KEY' -backend-config='token=$AWS_SESSION_TOKEN' -backend-config='role_arn=$AWS_ROLE_ARN' -backend-config='bucket=$AWS_S3_BUCKET' -backend-config='key=$AWS_S3_KEY'"
-        terraform init -input=false
+        export TF_CLI_ARGS_init="-backend-config='access_key=$AWS_ACCESS_KEY_ID' -backend-config='secret_key=$AWS_SECRET_ACCESS_KEY' -backend-config='token=$AWS_SESSION_TOKEN' -backend-config='role_arn=$AWS_ROLE_ARN' -backend-config='bucket=$AWS_S3_BUCKET' -backend-config='key=$AWS_S3_KEY'"  && terraform init -input=false
 
     - name: Terraform create workspace
-      working-directory: ./tf_event_bus
+      working-directory: ./infra/tf_event_bus
       run: terraform workspace select ${GITHUB_REF##*/}
 
     - name: Terraform validation
-      working-directory: ./tf_event_bus
+      working-directory: ./infra/tf_event_bus
       run: terraform validate
 
     - name: Terraform apply
-      working-directory: ./tf_event_bus
+      working-directory: ./infra/tf_event_bus
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
